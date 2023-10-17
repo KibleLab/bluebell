@@ -5,26 +5,40 @@ import {
   Container,
   ContainerProps,
   MenuItem,
-  Select,
-  SelectChangeEvent,
+  TextField,
+  TextFieldProps,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { ChangeEventHandler, Key, ReactNode } from 'react';
 
-interface Props extends ContainerProps {
-  titleLabel?: string;
-  defaultValue?: string;
-  values?: { id: number; value: string | number; text: string }[];
+interface Props
+  extends Omit<ContainerProps, 'onChange'>,
+    Pick<TextFieldProps, 'placeholder' | 'value' | 'onChange' | 'error' | 'helperText'> {
+  label?: ReactNode;
+  placeholder?: string;
+  value?: unknown;
+  onChange?: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+  dropDownItems?: {
+    id: Key | null;
+    value: string | number | readonly string[] | number;
+    text: string;
+  }[];
+  error?: boolean;
+  helperText?: ReactNode;
 }
 
 export default function SelectionLabel(props: Props) {
-  const { sx = [], titleLabel, defaultValue, values, ...restProps } = props;
-  const [select, setSelect] = useState('');
-
-  const handleChange = (event: SelectChangeEvent) => {
-    setSelect(event.target.value);
-  };
-
+  const {
+    sx = [],
+    label,
+    placeholder,
+    value,
+    onChange,
+    dropDownItems,
+    error,
+    helperText,
+    ...restProps
+  } = props;
   return (
     <Container
       sx={[styles.root, ...(Array.isArray(sx) ? sx : [sx])]}
@@ -32,25 +46,29 @@ export default function SelectionLabel(props: Props) {
       disableGutters
       {...restProps}>
       <Container
-        sx={styles.title}
+        sx={styles.labelView}
         maxWidth={false}
         disableGutters>
-        <Typography sx={styles.titleLabel}>{titleLabel}</Typography>
+        <Typography sx={styles.label}>{label}</Typography>
       </Container>
-      <Select
+      <TextField
         sx={styles.select}
-        value={select}
-        onChange={handleChange}
-        displayEmpty>
-        <MenuItem value=''>{defaultValue}</MenuItem>
-        {values?.map((item) => (
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        error={error}
+        helperText={helperText}
+        InputProps={{ style: styles.inputProps }}
+        variant='outlined'
+        select>
+        {dropDownItems?.map((item) => (
           <MenuItem
             key={item.id}
             value={item.value}>
             {item.text}
           </MenuItem>
         ))}
-      </Select>
+      </TextField>
     </Container>
   );
 }

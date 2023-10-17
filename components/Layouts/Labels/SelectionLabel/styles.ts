@@ -6,18 +6,20 @@ const styles = {
     display: 'inline-flex',
     justifiyContent: 'space-between',
   },
-  title: {
+  labelView: {
     width: '50%',
     display: 'inline-flex',
     alignItems: 'center',
   },
-  titleLabel: {
+  label: {
     color: '#000000',
     fontSize: '24px',
   },
   select: {
     width: '50%',
-    color: '#FF0000',
+  },
+  inputProps: {
+    height: '30px',
     fontSize: '18px',
   },
 };
